@@ -26,11 +26,14 @@ Permite adicionar, editar, remover e ordenar tarefas, além de possuir alertas p
 - **LocalStorage** (para salvar as tarefas localmente)
 
 ---
+## 💻 Como Executar o Projeto
+
+1. Clone o repositório:
+   Acesse o link = https://joaoalves-devv.github.io/lista-de-tarefas
 
 ## 💻 Como Executar o Projeto
 
 1. Clone o repositório:
-   ```bash
    git clone https://github.com/joaoalves-devv/lista-de-tarefas.git
 
 ## ☁️ Sugestões
