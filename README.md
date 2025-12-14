@@ -28,13 +28,13 @@ Permite adicionar, editar, remover e ordenar tarefas, além de possuir alertas p
 ---
 ## 💻 Como Executar o Projeto
 
-1. Clone o repositório:
-   Acesse o link = https://joaoalves-devv.github.io/lista-de-tarefas
+1. Acesse o link:
+   https://joaoalves-devv.github.io/lista-de-tarefas/
 
-## 💻 Como Executar o Projeto
+ou
 
-1. Clone o repositório:
-   git clone https://github.com/joaoalves-devv/lista-de-tarefas.git
+2. Clone o repositório:
+   https://github.com/joaoalves-devv/lista-de-tarefas
 
 ## ☁️ Sugestões
-> Para o caso de uma sugestão você estar enviando uma **ISSUE**
+> Para o caso de uma sugestão você pode estar enviando uma **ISSUE** no repositorio
