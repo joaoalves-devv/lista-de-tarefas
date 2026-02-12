@@ -25,9 +25,6 @@ Permite adicionar, editar, remover e ordenar tarefas, além de possuir alertas p
 - **SweetAlert2** (para os alertas)
 - **LocalStorage** (para salvar as tarefas localmente)
 
----
-<<<<<<< HEAD
-<<<<<<< HEAD
 ## 💻 Como Executar o Projeto
 
 1. Acesse o link:
@@ -43,15 +40,19 @@ ou
 =======
 =======
 >>>>>>> fecddaa (Subindo a versão 1.0 do Projeto Lista de Tarefas)
+=======
+## 💻 Como Executar o Projeto
+
+1. Clone o repositório:
+   Acesse o link = https://joaoalves-devv.github.io/lista-de-tarefas
+>>>>>>> e6003cd (Inserindo link rapido para o sistema)
 
 ## 💻 Como Executar o Projeto
 
 1. Clone o repositório:
-   ```bash
    git clone https://github.com/joaoalves-devv/lista-de-tarefas.git
 
 ## ☁️ Sugestões
-<<<<<<< HEAD
 > Para o caso de uma sugestão você estar enviando uma **ISSUE**
 >>>>>>> baa3f3fb76face3ba9d03e5eaaa461aa118bab50
 =======
