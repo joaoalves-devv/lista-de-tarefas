@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Evita o SweetAlert2 de quebrar o layout centralizado */
+body.swal2-shown {
+  overflow-y: hidden !important; /* impede barra de rolagem temporária */
+}
+
+html, body {
+  height: 100vh !important; /* garante altura fixa */
+}
+
+body.swal2-height-auto {
+  height: 100vh !important; /* sobrescreve o estilo que o SweetAlert aplica */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+}
+
+.container {
+    text-align: center;
+    background-color: #CBBBA7;
+    padding: 20px;
+    border-radius: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 900px;
+    border: 2px solid #8B7D70;
+    overflow: auto;
+}
+
+.botoesGeral {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: 1rem;
+}
+
+h1 {
+    font-size: 50px;
+    margin: 10px;
+    color: rgb(0 0 0);
+}
+
+p {
+    color: rgb(0 0 0);
+    font-size: 22px;
+    margin-bottom: 16px;
+}
+
+button {
+    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+    color: #F4F0EA;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #45801e; }
+
+.botao_lista button{
+    background-color: #ad314e; }
+
+.botao_lista:hover button{
+    background-color: #60041A; }
+
+/* Área com scroll apenas da lista */
+.lista-wrapper {
+    max-height: 300px;        /* ajuste como quiser */
+    overflow-y: auto;         /* scroll vertical */
+    overflow-x: hidden;
+    margin-top: 15px;
+    border-radius: 10px;
+}
+
+#tabelaTarefas {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Mantém o cabeçalho fixo */
+thead th {
+    padding: 0.5em;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+    color: #fff
+}
+
+tbody tr {
+    padding: 0.5em;
+    border-bottom: 1px solid #ddd;
+    background-color: #F4F0EA;
+    color: #331F19;
+    vertical-align: middle;
+    overflow: auto;
+}
+
+tbody td {
+    overflow: auto;
+    word-break: break-all;
+}
+
+tbody td .texto{
+    overflow: auto;
+    word-break: break-all;
+}
+
+/* ===== COLUNA TAREFA ===== */
+th.col-tarefa,
+td.col-tarefa {
+    width: 60%;
+    max-width: 60%;
+}
+
+td.col-tarefa {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-height: 4.5em;
+    overflow-y: auto;
+}
+
+
+/* Estilo da barra de rolagem personalizada */
+.lista-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lista-wrapper::-webkit-scrollbar-thumb {
+    background: #60041A;
+    border-radius: 10px;
+}
+
+.lista-wrapper::-webkit-scrollbar-track {
+    background: #E0D6C8;
+}
+
+/* ===== AÇÕES ===== */
+.acoes {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.texto{
+    margin-left: 2em;
+    padding: 0em;
+    padding-bottom: -14em;
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 23em;
+    word-break: break-word;
+    white-space: normal;
+    vertical-align: middle;
+    max-height: 6em;
+}
+
+.botoes{
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    gap: 10px;
+}
+
+.remover{
+    background-color: #ad314e; }
+
+.remover:hover{
+    background-color: #60041A;
+}
+
+.botaoOrdenar{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 3rem;
+}
+
+/* Estilo para o campo de entrada */
+input[type="text"] {
+    padding: 10px;
+    width: 100%;
+    max-width: 700px;
+    border: 2px solid #8B7D70;
+    border-radius: 5px;
+    font-size: 1em;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: border-color 0.3s ease; 
+}
+
+select {
+    padding: 10px;
+    width: 100%;
+    max-width: 200px;
+    border: 2px solid #8B7D70;
+    border-radius: 5px;
+    font-size: 1em;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: border-color 0.3s ease; 
+}
+
+input[type="text"]:focus {
+    border-color: #60041A;
+    box-shadow: inset 0 2px 4px rgba(96, 4, 26, 0.3); 
+}
+
+.taskDone {
+    background-color: #4CAF50; /* verde */
+    color: white;
+}
+
+.taskCancel {
+    background-color: #F44336; /* vermelho */
+    color: white;
+}
+
+.done {
+    background: #45801e;
+    color: #F4F0EA;
+}
+
+body.swal2-height-auto {
+    height: 100vh !important;
+}
+
+.ordenar {
+    background: none;
+}
+
+.ordenar:hover {
+    background: none;
+}
