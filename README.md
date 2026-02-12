@@ -37,24 +37,3 @@ ou
 
 ## ☁️ Sugestões
 > Para o caso de uma sugestão você pode estar enviando uma **ISSUE** no repositorio
-=======
-=======
->>>>>>> fecddaa (Subindo a versão 1.0 do Projeto Lista de Tarefas)
-=======
-## 💻 Como Executar o Projeto
-
-1. Clone o repositório:
-   Acesse o link = https://joaoalves-devv.github.io/lista-de-tarefas
->>>>>>> e6003cd (Inserindo link rapido para o sistema)
-
-## 💻 Como Executar o Projeto
-
-1. Clone o repositório:
-   git clone https://github.com/joaoalves-devv/lista-de-tarefas.git
-
-## ☁️ Sugestões
-> Para o caso de uma sugestão você estar enviando uma **ISSUE**
->>>>>>> baa3f3fb76face3ba9d03e5eaaa461aa118bab50
-=======
-> Para o caso de uma sugestão você estar enviando uma **ISSUE**
->>>>>>> fecddaa (Subindo a versão 1.0 do Projeto Lista de Tarefas)
