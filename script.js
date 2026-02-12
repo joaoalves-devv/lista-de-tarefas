@@ -18,6 +18,14 @@ function adicionarTarefa() {
     const statusTarefa = document.getElementById("statusTarefa").value;
     const prioridade = document.getElementById("prioridadeTarefa").value;
     const tarefa = inputTarefa.value.trim();
+    const idsValidos = tarefas
+    .map(t => Number(t.id))
+    .filter(id => !isNaN(id));
+
+const novoId = idsValidos.length > 0
+    ? Math.max(...idsValidos) + 1
+    : 1;
+
 
     if (tarefa === "") {
         Swal.fire({
@@ -37,7 +45,7 @@ function adicionarTarefa() {
         status: statusTarefa,
         prioridade: prioridade,
         criadaEm: new Date().toISOString(),
-        id: tarefas.length > 0 ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
+        id: novoId
     });
 
     fecharModal();
@@ -180,7 +188,6 @@ function editarTarefa(id) {
     selectPrioridade.value = tarefa.prioridade;
     selectStatus.value = tarefa.status;
 
-    // 🔥 troca o submit temporariamente
     form.onsubmit = function (e) {
         e.preventDefault();
 
@@ -255,63 +262,6 @@ function cancelarTarefa(i) {
         color: "#331F19"
     });
 }
-
-function editarTarefa(id) {
-
-    const tarefa = tarefas.find(t => t.id === id);
-    if (!tarefa) return;
-
-    const form = document.getElementById("modal");
-    const tituloModal = document.getElementById("tituloModalCriacao");
-    const inputTarefa = document.getElementById("inputTarefa");
-    const inputDescricao = document.getElementById("inputDescricao");
-    const selectPrioridade = document.getElementById("prioridadeTarefa");
-    const selectStatus = document.getElementById("statusTarefa");
-    const botaoSalvar = document.getElementById("botaoFinalizarCadastro");
-
-    tituloModal.textContent = "Editar Tarefa";
-    botaoSalvar.textContent = "Salvar alterações";
-
-    inputTarefa.value = tarefa.texto;
-    inputDescricao.value = tarefa.descricao;
-    selectPrioridade.value = tarefa.prioridade;
-    selectStatus.value = tarefa.status;
-
-    form.onsubmit = function (e) {
-        e.preventDefault();
-
-        const novoTexto = inputTarefa.value.trim();
-        if (!novoTexto) return;
-
-        // 🔥 Atualiza a tarefa pelo ID
-        const index = tarefas.findIndex(t => t.id === id);
-        if (index === -1) return;
-
-        tarefas[index] = {
-            ...tarefas[index],
-            texto: novoTexto,
-            descricao: inputDescricao.value.trim(),
-            prioridade: selectPrioridade.value,
-            status: selectStatus.value
-        };
-
-        atualizar();
-        fecharModal();
-
-        Swal.fire({
-            icon: "success",
-            title: "Tarefa editada!",
-            timer: 1000,
-            showConfirmButton: false
-        });
-
-        // 🔥 Restaura função original de criar
-        form.onsubmit = submitCriarOriginal;
-    };
-
-    abrirModal();
-}
-
 
 function removerTarefa(i) {
     tarefas.splice(i, 1);
@@ -660,3 +610,25 @@ function modalDeConfirmacao(mensagem, acaoConfirmar) {
         }
     });
 }
+
+// Corrige tarefas sem ID (caso tenha alguma tarefa criada antes da implementação do ID)
+function corrigirIdsAntigos() {
+    let maiorId = 0;
+
+    tarefas.forEach((tarefa, index) => {
+        // Se não tiver ID ou for inválido
+        if (!tarefa.id || isNaN(Number(tarefa.id))) {
+            maiorId++;
+            tarefa.id = maiorId;
+        } else {
+            tarefa.id = Number(tarefa.id);
+            if (tarefa.id > maiorId) {
+                maiorId = tarefa.id;
+            }
+        }
+    });
+
+    salvarTarefasNoLocalStorage();
+}
+
+corrigirIdsAntigos();
