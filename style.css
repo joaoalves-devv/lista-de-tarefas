@@ -113,7 +113,6 @@ tbody tr {
 }
 
 tbody td {
-    max-width: 18em;
     padding-left: 10px;
     text-align: left;
     overflow: auto;
@@ -125,13 +124,6 @@ tbody td .texto{
     word-break: break-all;
 }
 
-/* ===== COLUNA TAREFA ===== */
-th.col-tarefa,
-td.col-tarefa {
-    width: 60%;
-    max-width: 60%;
-}
-
 td.col-tarefa {
     white-space: normal;
     word-break: break-word;
@@ -140,6 +132,47 @@ td.col-tarefa {
     overflow-y: auto;
 }
 
+/* Largura titulo */
+th:nth-child(2),
+td:nth-child(2) {
+  width: 22%;
+}
+
+/* Largura descrição */
+th:nth-child(3){
+  width: 22%;
+}
+
+td:nth-child(3) {
+  word-break: break-word;
+  overflow-y: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* número de linhas */
+  -webkit-box-orient: vertical;
+}
+
+/* Scroul bar descrição */
+ td::-webkit-scrollbar {
+    width: 3px;
+    background: #E0D6C8;
+}
+/* Scroul bar descrição */
+td::-webkit-scrollbar-thumb {
+    background: #60041A;
+    border-radius: 10px;    
+}
+
+/* Largura prioridade */
+th:nth-child(5),
+td:nth-child(5) {
+  width: 14%;
+}
+
+/* Largura data de criação */
+th:nth-child(6),
+td:nth-child(6) {
+  width: 14%;
+}
 
 /* Estilo da barra de rolagem personalizada */
 .lista-wrapper::-webkit-scrollbar {
@@ -224,11 +257,11 @@ textarea {
     transition: border-color 0.3s ease; 
 }
 
-select, input[type="date"] {
+select, input[type="datetime-local"] {
     padding: 10px;
     width: 100%;
-    min-width: 150px;
-    max-width: 200px;
+    min-width: 170px;
+    max-width: 170px;
     border: 2px solid #8B7D70;
     border-radius: 5px;
     font-size: 1em;
@@ -379,4 +412,41 @@ body.swal2-height-auto {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.mostrar {
+    display: flex !important;
+    flex-direction: column;
+    text-align: center;
+}
+
+.esconder {
+    display: none !important;
+}
+
+.listagemAcoes {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background: #F4F0EA;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.btnAcoes {
+    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+    color: #F4F0EA;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0.1rem;
+    font-size: 0.7em;
+}
+
+.btnAcoes:hover {
+    background: #60041A;
+    color: white;
+    transition: background-color 0.3s ease;
 }

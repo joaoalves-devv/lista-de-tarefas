@@ -38,10 +38,10 @@
           <tr>
             <th onclick="ordenarId()" style="cursor: pointer">ID</th>
             <th onclick="ordenarTarefas()" style="cursor: pointer;">Tarefa</th>
-            <th onclick="ordenarDescrricao()" style="cursor: pointer;">Descrição</th>
+            <th onclick="ordenarDescricao()" style="cursor: pointer;">Descrição</th>
             <th onclick="ordenarPrioridade()" style="cursor: pointer;">Prioridade</th>
             <th onclick="ordenarstatus()" style="cursor: pointer;">Status</th>
-            <th onclick="ordenarCriação()" style="cursor: pointer;">Criação</th>
+            <th onclick="ordenarCriacao()" style="cursor: pointer;">Criação</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -52,13 +52,13 @@
     <!-- 🔲 MODAL -->
     <div id="modal" class="modal">
       <div class="modal-content">
-        <h2>Nova Tarefa</h2>
+        <h2 id="tituloModalCriacao">Nova Tarefa</h2>
 
           <input type="text" id="inputTarefa" placeholder="Digite a tarefa">
         <div>
           <textarea name="descrição" id="inputDescricao" placeholder="Digite a descrição da sua tarefa"></textarea>
         </div>
-        <div style="display: flex;">
+        <div style="display: flex;     justify-content: space-between;">
 
           <select id="prioridadeTarefa">
             <option value="Baixa">Baixa</option>
@@ -75,7 +75,7 @@
         </div>
         <div class="modal-botoes">
           <button onclick="fecharModal()">Cancelar</button>
-          <button onclick="adicionarTarefa()">Salvar</button>
+          <button onclick="adicionarTarefa()" id="botaoFinalizarCadastro">Salvar</button>
         </div>
       </div>
     </div>
@@ -109,23 +109,25 @@
             </select>
           </div>
         </div>
-        <div class="between">
+        <!-- <div class="between">
           <div class="flex-column">
 
             <label for="filtroDataInicio">Data inicio</label>
-            <input type="date" id="filtroDataInicio">
+            <input type="datetime-local" id="filtroDataInicio" value="{startDate}
+  onChange={(e) => setStartDate(e.target.value)}">
           </div>
           <div class="flex-column">
 
             <label for="filtroDataFim">Data fim</label>
-            <input type="date" id="filtroDataFim">
+            <input type="datetime-local" id="filtroDataFim" value="{endDate}
+  onChange={(e) => setEndDate(e.target.value)}">
           </div>
         </div>
         <div class="between">
           <div class="flex-column">
 
             <label for="filtroVencimento">Vencimento</label>
-            <input type="date" id="filtroVencimento">
+            <input type="datetime-local" id="filtroVencimento">
 
           </div>
           <div class="flex-column">
@@ -138,7 +140,7 @@
             </select>
           </div>
 
-        </div>
+        </div> -->
 
         <div class="modal-botoes-filtros; between">
           <button onclick="limparFiltros()">Limpar Filtros</button>

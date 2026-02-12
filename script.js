@@ -2,6 +2,15 @@
 let tarefas = [];
 let ordenarAscendente = true;
 
+// Garante que a função original de criar tarefa esteja sempre disponível
+const form = document.getElementById("modal");
+
+form.onsubmit = function (e) {
+    e.preventDefault();
+    adicionarTarefa();
+};
+
+
 // ================== ADICIONAR ==================
 function adicionarTarefa() {
     const inputTarefa = document.getElementById("inputTarefa");
@@ -92,45 +101,128 @@ function renderizarTarefas() {
 
                 // Data
                 const tdData = document.createElement("td");
-                tdData.textContent = new Date(tarefa.criadaEm).toLocaleDateString("pt-BR");
+
+                tdData.textContent = new Date(tarefa.criadaEm)
+                .toLocaleString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
 
                 // Ações
                 const tdAcoes = document.createElement("td");
+                const listagemAcoes = document.createElement("div");
                 tdAcoes.classList.add("acoes");
+                listagemAcoes.classList.add("listagemAcoes", "esconder");
+                tdAcoes.appendChild(listagemAcoes);
+                const btnOpcoes = document.createElement("button");
+                btnOpcoes.textContent = "⚙️";
+                btnOpcoes.addEventListener("mouseenter", () => {
+                    listagemAcoes.classList.remove("esconder");
+                    listagemAcoes.classList.add("mostrar");
+                });
+                listagemAcoes.addEventListener("mouseleave", () => {
+                    listagemAcoes.classList.remove("mostrar");
+                    listagemAcoes.classList.add("esconder");
+                });
+                tdAcoes.appendChild(btnOpcoes);
 
                 const btnConcluir = document.createElement("button");
-                btnConcluir.textContent = "✔";
+                btnConcluir.textContent = "Marcar como conluida!";
                 btnConcluir.onclick = () => marcarComoFeito(i);
+                btnConcluir.classList.add("btnAcoes");
 
                 const btnCancelar = document.createElement("button");
-                btnCancelar.textContent = "❌";
+                btnCancelar.textContent = "Cancelar";
                 btnCancelar.onclick = () => cancelarTarefa(i);
+                btnCancelar.classList.add("btnAcoes");
 
                 const btnEditar = document.createElement("button");
-                btnEditar.textContent = "✍";
-                btnEditar.onclick = () => editarTarefa(i);
+                btnEditar.textContent = "Editar";
+                btnEditar.onclick = () => editarTarefa(tarefa.id);
+                btnEditar.classList.add("btnAcoes");
 
                 const btnRemover = document.createElement("button");
-                btnRemover.textContent = "🗑️";
-                btnRemover.classList.add("remover");
+                btnRemover.textContent = "Remover";
                 btnRemover.onclick = () => removerTarefa(i);
+                btnRemover.classList.add("btnAcoes");
 
-                tdAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
+
+                listagemAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
 
                 tr.append(tdId, tdTexto, tdDescricao, tdPrioridade, tdStatus, tdData, tdAcoes);
                 tbody.appendChild(tr);
             }
-});}
+        });
+}
 
+function editarTarefa(id) {
+
+    const tarefa = tarefas.find(t => t.id === id);
+    if (!tarefa) return;
+
+    const form = document.getElementById("modal");
+    const tituloModal = document.getElementById("tituloModalCriacao");
+    const inputTarefa = document.getElementById("inputTarefa");
+    const inputDescricao = document.getElementById("inputDescricao");
+    const selectPrioridade = document.getElementById("prioridadeTarefa");
+    const selectStatus = document.getElementById("statusTarefa");
+    const botaoSalvar = document.getElementById("botaoFinalizarCadastro");
+
+    tituloModal.textContent = "Editar Tarefa";
+    botaoSalvar.textContent = "Salvar alterações";
+
+    inputTarefa.value = tarefa.texto;
+    inputDescricao.value = tarefa.descricao;
+    selectPrioridade.value = tarefa.prioridade;
+    selectStatus.value = tarefa.status;
+
+    // 🔥 troca o submit temporariamente
+    form.onsubmit = function (e) {
+        e.preventDefault();
+
+        const novoTexto = inputTarefa.value.trim();
+        if (novoTexto === "") return;
+
+        const index = tarefas.findIndex(t => t.id === id);
+        if (index === -1) return;
+
+        tarefas[index].texto = novoTexto;
+        tarefas[index].descricao = inputDescricao.value;
+        tarefas[index].status = selectStatus.value;
+        tarefas[index].prioridade = selectPrioridade.value;
+
+        atualizar();
+        fecharModal();
+
+        Swal.fire({
+            icon: "success",
+            title: "Tarefa editada!",
+            timer: 1000,
+            showConfirmButton: false
+        });
+
+        // 🔥 RESTAURA para modo criar
+        form.onsubmit = function (e) {
+            e.preventDefault();
+            adicionarTarefa();
+        };
+    };
+
+    abrirModal();
+}
 // ================== STATUS ==================
 function formatarStatus(status) {
-  const mapa = {
-    pendente: "Em aberto",
-    concluida: "Concluída",
-    cancelada: "Cancelada"
-  };
+    const mapa = {
+        pendente: "Em aberto",
+        concluida: "Concluída",
+        cancelada: "Cancelada"
+    };
 
-  return mapa[status] || status;
+    return mapa[status] || status;
 }
 
 // ================== AÇÕES ==================
@@ -164,24 +256,62 @@ function cancelarTarefa(i) {
     });
 }
 
-function editarTarefa(i) {
-    const novoTexto = prompt("Edite sua tarefa:", tarefas[i].texto);
+function editarTarefa(id) {
 
-    if (novoTexto && novoTexto.trim() !== "") {
-        tarefas[i].texto = novoTexto.trim();
-        salvarTarefasNoLocalStorage();
-        renderizarTarefas();
+    const tarefa = tarefas.find(t => t.id === id);
+    if (!tarefa) return;
+
+    const form = document.getElementById("modal");
+    const tituloModal = document.getElementById("tituloModalCriacao");
+    const inputTarefa = document.getElementById("inputTarefa");
+    const inputDescricao = document.getElementById("inputDescricao");
+    const selectPrioridade = document.getElementById("prioridadeTarefa");
+    const selectStatus = document.getElementById("statusTarefa");
+    const botaoSalvar = document.getElementById("botaoFinalizarCadastro");
+
+    tituloModal.textContent = "Editar Tarefa";
+    botaoSalvar.textContent = "Salvar alterações";
+
+    inputTarefa.value = tarefa.texto;
+    inputDescricao.value = tarefa.descricao;
+    selectPrioridade.value = tarefa.prioridade;
+    selectStatus.value = tarefa.status;
+
+    form.onsubmit = function (e) {
+        e.preventDefault();
+
+        const novoTexto = inputTarefa.value.trim();
+        if (!novoTexto) return;
+
+        // 🔥 Atualiza a tarefa pelo ID
+        const index = tarefas.findIndex(t => t.id === id);
+        if (index === -1) return;
+
+        tarefas[index] = {
+            ...tarefas[index],
+            texto: novoTexto,
+            descricao: inputDescricao.value.trim(),
+            prioridade: selectPrioridade.value,
+            status: selectStatus.value
+        };
+
+        atualizar();
+        fecharModal();
 
         Swal.fire({
             icon: "success",
             title: "Tarefa editada!",
             timer: 1000,
-            showConfirmButton: false,
-            background: "#F4F0EA",
-            color: "#331F19"
+            showConfirmButton: false
         });
-    }
+
+        // 🔥 Restaura função original de criar
+        form.onsubmit = submitCriarOriginal;
+    };
+
+    abrirModal();
 }
+
 
 function removerTarefa(i) {
     tarefas.splice(i, 1);
@@ -271,11 +401,11 @@ function ordenarPrioridade() {
     renderizarTarefas();
 }
 
-function ordenarCriação() {
-    tarefas.sort((a, b) =>
-        ordenarAscendente
-            ? a.criadaEm - b.criadaEm
-            : b.criadaEm - a.criadaEm
+function ordenarCriacao() {
+    tarefas.sort((a, b) => 
+        ordenarAscendente            ? new Date(a.criadaEm) - new Date(b.criadaEm)
+            : new Date(b.criadaEm) - new Date(a.criadaEm)
+            
     );
 
     ordenarAscendente = !ordenarAscendente;
@@ -295,11 +425,11 @@ function ordenarId() {
     renderizarTarefas();
 }
 
-function ordenarDescrricao() {
+function ordenarDescricao() {
     tarefas.sort((a, b) =>
         ordenarAscendente
-            ? a.descricao - b.descricao
-            : b.descricao - a.descricao
+            ? a.descricao.localeCompare(b.descricao)
+            : b.descricao.localeCompare(a.descricao)
     );
 
     ordenarAscendente = !ordenarAscendente;
@@ -309,8 +439,8 @@ function ordenarDescrricao() {
 
 function limpar() {
     modalDeConfirmacao("Tem certeza que deseja limpar toda a lista?", () => {
-            tarefas = [];
-            atualizar();
+        tarefas = [];
+        atualizar();
     });
 }
 
@@ -363,12 +493,12 @@ function exportarPDF() {
 
     doc.setFontSize(15);
     doc.setTextColor(33, 31, 25);
-    doc.text("===========================================================", 14, 25);
+    doc.text("_______________________________________________", 14, 25);
 
     // =========================================
     // 3. Definição das colunas da tabela
     // =========================================
-    const colunas = ["Tarefa", "Prioridade", "Status", "Criação"];
+    const colunas = ["Tarefa", "Descrição", "Prioridade", "Status", "Criação"];
 
     // =========================================
     // 4. Monta o corpo da tabela a partir
@@ -376,6 +506,7 @@ function exportarPDF() {
     // =========================================
     const linhas = tarefas.map(tarefa => [
         tarefa.id + " - " + tarefa.texto,
+        tarefa.descricao,
         tarefa.prioridade,
         formatarStatus(tarefa.status),
         new Date(tarefa.criadaEm).toLocaleDateString("pt-BR")
@@ -416,10 +547,11 @@ function exportarPDF() {
         // Alinhamento e largura por coluna
         // -------------------------------------
         columnStyles: {
-            0: { halign: "left", cellWidth: 90 }, // Tarefa
-            1: { halign: "center", cellWidth: 30 }, // Prioridade
-            2: { halign: "center", cellWidth: 30 }, // Status
-            3: { halign: "center", cellWidth: 30 }  // Data
+            0: { halign: "left", cellWidth: 40 }, // Tarefa
+            1: { halign: "left", cellWidth: 50 }, // Descrição
+            2: { halign: "center", cellWidth: 30 }, // Prioridade
+            3: { halign: "center", cellWidth: 30 }, // Status
+            4: { halign: "center", cellWidth: 30 }  // Data
         },
 
         // -------------------------------------
@@ -427,7 +559,7 @@ function exportarPDF() {
         // -------------------------------------
         didParseCell: function (data) {
             if (data.section === "body") {
-                const status = data.row.raw[2]; // coluna "Status"
+                const status = data.row.raw[3]; // coluna "Status"
 
                 // Concluída → Verde
                 if (status === "Concluída") {
@@ -467,9 +599,9 @@ function exportarPDF() {
 
 // ================== ATUALIZAR ==================
 function atualizar() {
-  salvarTarefasNoLocalStorage();
-  renderizarTarefas();
-  renderizarBotaoLimpar();
+    salvarTarefasNoLocalStorage();
+    renderizarTarefas();
+    renderizarBotaoLimpar();
 }
 
 function abrirModal() {
@@ -482,7 +614,7 @@ function fecharModal() {
 }
 
 // Modal Filtro
-function abrirModalFiltros(){
+function abrirModalFiltros() {
     document.getElementById("modalFiltros").style.display = "flex";
 }
 
@@ -528,4 +660,3 @@ function modalDeConfirmacao(mensagem, acaoConfirmar) {
         }
     });
 }
-
