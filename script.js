@@ -8,6 +8,7 @@ function adicionarTarefa() {
     const statusTarefa = document.getElementById("statusTarefa").value;
     const prioridade = document.getElementById("prioridadeTarefa").value;
     const tarefa = inputTarefa.value.trim();
+    const idTask = null; // ID será gerado automaticamente
 
     if (tarefa === "") {
         Swal.fire({
@@ -25,7 +26,8 @@ function adicionarTarefa() {
         texto: tarefa,
         status: statusTarefa,
         prioridade: prioridade,
-        criadaEm: new Date().toISOString()
+        criadaEm: new Date().toISOString(),
+        id: tarefas.length > 0 ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
     });
 
     fecharModal();
@@ -66,6 +68,9 @@ function renderizarTarefas() {
                 if (tarefa.status === "cancelada") tr.classList.add("taskCancel");
 
                 // ========= COLUNAS =========
+                // ID
+                const tdId = document.createElement("td");
+                tdId.textContent = tarefa.id;
 
                 // Tarefa
                 const tdTexto = document.createElement("td");
@@ -107,7 +112,7 @@ function renderizarTarefas() {
 
                 tdAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
 
-                tr.append(tdTexto, tdPrioridade, tdStatus, tdData, tdAcoes);
+                tr.append(tdId, tdTexto, tdPrioridade, tdStatus, tdData, tdAcoes);
                 tbody.appendChild(tr);
             }
 });}
@@ -249,6 +254,41 @@ function ordenarstatus() {
     renderizarTarefas();
 }
 
+function ordenarPrioridade() {
+    tarefas.sort((a, b) =>
+        ordenarAscendente
+            ? a.prioridade.localeCompare(b.prioridade)
+            : b.prioridade.localeCompare(a.prioridade)
+    );
+
+    ordenarAscendente = !ordenarAscendente;
+    salvarTarefasNoLocalStorage();
+    renderizarTarefas();
+}
+
+function ordenarCriação() {
+    tarefas.sort((a, b) =>
+        ordenarAscendente
+            ? a.criadaEm - b.criadaEm
+            : b.criadaEm - a.criadaEm
+    );
+
+    ordenarAscendente = !ordenarAscendente;
+    salvarTarefasNoLocalStorage();
+    renderizarTarefas();
+}
+
+function ordenarId() {
+    tarefas.sort((a, b) =>
+        ordenarAscendente
+            ? a.id - b.id
+            : b.id - a.id
+    );
+
+    ordenarAscendente = !ordenarAscendente;
+    salvarTarefasNoLocalStorage();
+    renderizarTarefas();
+}
 
 function limpar() {
     modalDeConfirmacao("Tem certeza que deseja limpar toda a lista?", () => {
@@ -318,7 +358,7 @@ function exportarPDF() {
     //    do array de tarefas
     // =========================================
     const linhas = tarefas.map(tarefa => [
-        tarefa.texto,
+        tarefa.id + " - " + tarefa.texto,
         tarefa.prioridade,
         formatarStatus(tarefa.status),
         new Date(tarefa.criadaEm).toLocaleDateString("pt-BR")

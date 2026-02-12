@@ -113,6 +113,9 @@ tbody tr {
 }
 
 tbody td {
+    max-width: 18em;
+    padding-left: 10px;
+    text-align: left;
     overflow: auto;
     word-break: break-all;
 }
