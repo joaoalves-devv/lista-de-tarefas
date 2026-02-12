@@ -9,45 +9,91 @@
   
     
 </head>
-<body>
+<body style="height: 100vh !important;">
     <div class="container">
         <h1>Lista de Tarefas</h1>
         <p>Adicione suas tarefas!</p>
-        <div style="display: flex;">
-          <input type="text" id="inputTarefa" placeholder="Digite sua tarefa">
-          <select id="statusTarefa">
+          <!-- 🔎 PESQUISA E FILTROS -->
+        <div class="filtros">
+          <input type="text" id="pesquisa" placeholder="Pesquisar tarefa...">
+
+          <select id="filtroStatus">
+            <option value="">Todos status</option>
             <option value="Em aberto">Em aberto</option>
-            <option value="concluida">Concluida</option>
+            <option value="concluida">Concluída</option>
             <option value="cancelada">Cancelada</option>
           </select>
-          
+
+          <select id="filtroPrioridade">
+            <option value="">Todas prioridades</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+          </select>
         </div>
+        <!-- BOTÕES -->
         <div class="botoesGeral">
-          <button onclick="adicionarTarefa()">Adicionar Tarefa</button>
+          <button onclick="abrirModal()">➕ Adicionar Tarefa</button>
+          <button onclick="exportarPDF()">📄 Exportar PDF</button>
           <span id="botoesExtras"></span>
         </div>
         <p id="mensagem"></p>
         <!-- LOADER -->
         <div id="loader" class="loader"></div>
           <div id="modalConfirmacao"></div>
-          <div class="lista-wrapper">
 
-            <table id="tabelaTarefas">
-                  <thead>
-                    <tr>
-                        <th id="botaoOrdenar">Tarefa</th>
-                        <th>Status</th> <!-- Nova coluna para status -->
-                        <th id="botaoOrdenarStatus">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="listaTarefas">
-                  <!-- As tarefas serão inseridas aqui -->
-              </tbody>
-            </table>
+          <!-- TABELA -->
+        <div class="lista-wrapper">
+          <table id="tabelaTarefas">
+            <thead>
+              <tr>
+                <th>Tarefa</th>
+                <th>Prioridade</th>
+                <th>Status</th>
+                <th>Criação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="listaTarefas"></tbody>
+          </table>
+        </div>
+
+        <!-- 🔲 MODAL -->
+        <div id="modal" class="modal">
+          <div class="modal-content">
+            <h2>Nova Tarefa</h2>
+
+            <input type="text" id="inputTarefa" placeholder="Digite a tarefa">
+            <div style="display: flex;">
+
+              <select id="prioridadeTarefa">
+                <option value="Baixa">Baixa</option>
+                <option value="Média">Média</option>
+                <option value="Alta">Alta</option>
+              </select>
+  
+              <select id="statusTarefa">
+                <option value="Em aberto">Em aberto</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+  
+            </div>
+            <div class="modal-botoes">
+              <button onclick="fecharModal()">Cancelar</button>
+              <button onclick="adicionarTarefa()">Salvar</button>
           </div>
+          </div>
+        </div>
+
+
+      </div>
     </div>
     <script src="script.js"></script>
   <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </body>
 </html>

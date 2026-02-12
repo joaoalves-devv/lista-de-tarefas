@@ -167,7 +167,7 @@ td.col-tarefa {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    max-width: 23em;
+    max-width: 100%;
     word-break: break-word;
     white-space: normal;
     vertical-align: middle;
@@ -232,12 +232,12 @@ input[type="text"]:focus {
 
 .taskCancel {
     background-color: #F44336; /* vermelho */
-    color: white;
+    color: white !important;
 }
 
 .done {
     background: #45801e;
-    color: #F4F0EA;
+    color: #F4F0EA !important;
 }
 
 body.swal2-height-auto {
@@ -250,4 +250,62 @@ body.swal2-height-auto {
 
 .ordenar:hover {
     background: none;
+}
+
+.prioridade-Baixa {
+    color: #000000;
+    font-weight: bold;
+}
+
+.prioridade-Média {
+    color: #f9a825;
+    font-weight: bold;
+}
+
+.prioridade-Alta {
+    color: #000000;
+    font-weight: bold;
+}
+
+/* FILTROS */
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.filtros label {
+  font-weight: bold;
+  color: #331F19;
+}   
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #F4F0EA;
+  padding: 20px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  gap: 10px;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.modal-botoes {
+  display: flex;
+  justify-content: space-between;
 }
