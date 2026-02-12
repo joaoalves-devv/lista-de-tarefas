@@ -101,10 +101,12 @@ function renderizarTarefas() {
                 // Tarefa
                 const tdTexto = document.createElement("td");
                 tdTexto.textContent = tarefa.texto;
+                tdTexto.textContent = (tarefa.texto || "").trim() || "-";
 
                 // Descrição
                 const tdDescricao = document.createElement("td");
                 tdDescricao.textContent = tarefa.descricao;
+                tdDescricao.textContent = (tarefa.descricao || "").trim() || "-";
 
                 // Prioridade
                 const tdPrioridade = document.createElement("td");
