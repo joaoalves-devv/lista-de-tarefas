@@ -113,7 +113,6 @@ function renderizarTarefas() {
 });}
 
 // ================== STATUS ==================
-// ================== STATUS ==================
 function formatarStatus(status) {
   const mapa = {
     pendente: "Em aberto",
