@@ -27,6 +27,7 @@ Permite adicionar, editar, remover e ordenar tarefas, além de possuir alertas p
 
 ---
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## 💻 Como Executar o Projeto
 
 1. Acesse o link:
@@ -40,6 +41,8 @@ ou
 ## ☁️ Sugestões
 > Para o caso de uma sugestão você pode estar enviando uma **ISSUE** no repositorio
 =======
+=======
+>>>>>>> fecddaa (Subindo a versão 1.0 do Projeto Lista de Tarefas)
 
 ## 💻 Como Executar o Projeto
 
@@ -48,5 +51,9 @@ ou
    git clone https://github.com/joaoalves-devv/lista-de-tarefas.git
 
 ## ☁️ Sugestões
+<<<<<<< HEAD
 > Para o caso de uma sugestão você estar enviando uma **ISSUE**
 >>>>>>> baa3f3fb76face3ba9d03e5eaaa461aa118bab50
+=======
+> Para o caso de uma sugestão você estar enviando uma **ISSUE**
+>>>>>>> fecddaa (Subindo a versão 1.0 do Projeto Lista de Tarefas)
