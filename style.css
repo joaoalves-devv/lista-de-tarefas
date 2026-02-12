@@ -117,7 +117,7 @@ tbody td {
     padding-left: 10px;
     text-align: left;
     overflow: auto;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 tbody td .texto{
@@ -202,7 +202,6 @@ td.col-tarefa {
 input[type="text"] {
     padding: 10px;
     width: 100%;
-    max-width: 700px;
     border: 2px solid #8B7D70;
     border-radius: 5px;
     font-size: 1em;
@@ -211,9 +210,24 @@ input[type="text"] {
     transition: border-color 0.3s ease; 
 }
 
-select {
+textarea {
+    padding: 10px;
+    min-width: 27.5em;
+    max-width: 27.5em;
+    height: 6em;
+    max-height: 6em;
+    border: 2px solid #8B7D70;
+    border-radius: 5px;
+    font-size: 1em;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: border-color 0.3s ease; 
+}
+
+select, input[type="date"] {
     padding: 10px;
     width: 100%;
+    min-width: 150px;
     max-width: 200px;
     border: 2px solid #8B7D70;
     border-radius: 5px;
@@ -272,10 +286,12 @@ body.swal2-height-auto {
 
 /* FILTROS */
 .filtros {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: baseline;
 }
+
 .filtros label {
   font-weight: bold;
   color: #331F19;
@@ -311,4 +327,56 @@ body.swal2-height-auto {
 .modal-botoes {
   display: flex;
   justify-content: space-between;
+}
+
+/* Modal Filtros */
+
+.modalFiltros {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content-filtros {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #F4F0EA;
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    gap: 10px;
+}
+
+.between {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.modal-content-filtros input,
+.modal-content-filtros select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.modal-botoes-filtros {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

@@ -1,100 +1,159 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Tarefas</title>
   <link rel="stylesheet" href="style.css">
-  
-    
-</head>
-<body style="height: 100vh !important;">
-    <div class="container">
-        <h1>Lista de Tarefas</h1>
-        <p>Adicione suas tarefas!</p>
-          <!-- 🔎 PESQUISA E FILTROS -->
-        <div class="filtros">
-          <input type="text" id="pesquisa" placeholder="Pesquisar tarefa...">
 
-          <select id="filtroStatus">
-            <option value="">Todos status</option>
+
+</head>
+
+<body style="height: 100vh !important;">
+  <div class="container">
+    <h1>Lista de Tarefas</h1>
+    <p>Adicione suas tarefas!</p>
+    <!-- 🔎 PESQUISA E FILTROS -->
+    <div class="filtros">
+      <input type="text" id="pesquisa" placeholder="Pesquisar tarefa...">
+      <button onclick="abrirModalFiltros()">FIltrar</button>
+    </div>
+    <!-- BOTÕES -->
+    <div class="botoesGeral">
+      <button onclick="abrirModal()">➕ Adicionar Tarefa</button>
+      <button onclick="exportarPDF()">📄 Exportar PDF</button>
+      <span id="botoesExtras"></span>
+    </div>
+    <p id="mensagem"></p>
+    <!-- LOADER -->
+    <div id="loader" class="loader"></div>
+    <div id="modalConfirmacao"></div>
+
+    <!-- TABELA -->
+    <div class="lista-wrapper">
+      <table id="tabelaTarefas">
+        <thead>
+          <tr>
+            <th onclick="ordenarId()" style="cursor: pointer">ID</th>
+            <th onclick="ordenarTarefas()" style="cursor: pointer;">Tarefa</th>
+            <th onclick="ordenarDescrricao()" style="cursor: pointer;">Descrição</th>
+            <th onclick="ordenarPrioridade()" style="cursor: pointer;">Prioridade</th>
+            <th onclick="ordenarstatus()" style="cursor: pointer;">Status</th>
+            <th onclick="ordenarCriação()" style="cursor: pointer;">Criação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaTarefas"></tbody>
+      </table>
+    </div>
+
+    <!-- 🔲 MODAL -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <h2>Nova Tarefa</h2>
+
+          <input type="text" id="inputTarefa" placeholder="Digite a tarefa">
+        <div>
+          <textarea name="descrição" id="inputDescricao" placeholder="Digite a descrição da sua tarefa"></textarea>
+        </div>
+        <div style="display: flex;">
+
+          <select id="prioridadeTarefa">
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+          </select>
+
+          <select id="statusTarefa">
             <option value="Em aberto">Em aberto</option>
             <option value="concluida">Concluída</option>
             <option value="cancelada">Cancelada</option>
           </select>
 
-          <select id="filtroPrioridade">
-            <option value="">Todas prioridades</option>
-            <option value="Baixa">Baixa</option>
-            <option value="Média">Média</option>
-            <option value="Alta">Alta</option>
-          </select>
         </div>
-        <!-- BOTÕES -->
-        <div class="botoesGeral">
-          <button onclick="abrirModal()">➕ Adicionar Tarefa</button>
-          <button onclick="exportarPDF()">📄 Exportar PDF</button>
-          <span id="botoesExtras"></span>
+        <div class="modal-botoes">
+          <button onclick="fecharModal()">Cancelar</button>
+          <button onclick="adicionarTarefa()">Salvar</button>
         </div>
-        <p id="mensagem"></p>
-        <!-- LOADER -->
-        <div id="loader" class="loader"></div>
-          <div id="modalConfirmacao"></div>
-
-          <!-- TABELA -->
-        <div class="lista-wrapper">
-          <table id="tabelaTarefas">
-            <thead>
-              <tr>
-                <th onclick="ordenarId()" style="cursor: pointer">ID</th>
-                <th onclick="ordenarTarefas()" style="cursor: pointer;">Tarefa</th>
-                <th onclick="ordenarPrioridade()" style="cursor: pointer;">Prioridade</th>
-                <th onclick="ordenarstatus()" style="cursor: pointer;">Status</th>
-                <th onclick="ordenarCriação()" style="cursor: pointer;">Criação</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="listaTarefas"></tbody>
-          </table>
-        </div>
-
-        <!-- 🔲 MODAL -->
-        <div id="modal" class="modal">
-          <div class="modal-content">
-            <h2>Nova Tarefa</h2>
-
-            <input type="text" id="inputTarefa" placeholder="Digite a tarefa">
-            <div style="display: flex;">
-
-              <select id="prioridadeTarefa">
-                <option value="Baixa">Baixa</option>
-                <option value="Média">Média</option>
-                <option value="Alta">Alta</option>
-              </select>
-  
-              <select id="statusTarefa">
-                <option value="Em aberto">Em aberto</option>
-                <option value="concluida">Concluída</option>
-                <option value="cancelada">Cancelada</option>
-              </select>
-  
-            </div>
-            <div class="modal-botoes">
-              <button onclick="fecharModal()">Cancelar</button>
-              <button onclick="adicionarTarefa()">Salvar</button>
-          </div>
-          </div>
-        </div>
-
-
       </div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- MODAL FILTRO -->
+    <div id="modalFiltros" class="modalFiltros">
+      <div class="modal-content-filtros">
+        <div class="between">
+          <h2 style="width: 100%;">Filtros</h2>
+          <span onclick="fecharModalFiltros()" class="pointer">X</span>
+        </div>
+        <div class="between">
+          <div class="flex-column">
+
+            <label for="filtroStatus">Status</label>
+            <select id="filtroStatus">
+              <option value="">Todos</option>
+              <option value="Em aberto">Em aberto</option>
+              <option value="concluida">Concluída</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          <div class="flex-column">
+
+            <label for="filtroPrioridade">Prioridade</label>
+            <select id="filtroPrioridade">
+              <option value="">Todas</option>
+              <option value="Baixa">Baixa</option>
+              <option value="Média">Média</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+        </div>
+        <div class="between">
+          <div class="flex-column">
+
+            <label for="filtroDataInicio">Data inicio</label>
+            <input type="date" id="filtroDataInicio">
+          </div>
+          <div class="flex-column">
+
+            <label for="filtroDataFim">Data fim</label>
+            <input type="date" id="filtroDataFim">
+          </div>
+        </div>
+        <div class="between">
+          <div class="flex-column">
+
+            <label for="filtroVencimento">Vencimento</label>
+            <input type="date" id="filtroVencimento">
+
+          </div>
+          <div class="flex-column">
+
+            <label for="">Tags</label>
+            <select name="tags" id="filtroTags">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-botoes-filtros; between">
+          <button onclick="limparFiltros()">Limpar Filtros</button>
+          <button onclick="aplicarFiltros()">Filtrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="script.js"></script>
   <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </body>
+
 </html>

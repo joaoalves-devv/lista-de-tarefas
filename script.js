@@ -5,10 +5,10 @@ let ordenarAscendente = true;
 // ================== ADICIONAR ==================
 function adicionarTarefa() {
     const inputTarefa = document.getElementById("inputTarefa");
+    const inputDescricao = document.getElementById("inputDescricao").value;
     const statusTarefa = document.getElementById("statusTarefa").value;
     const prioridade = document.getElementById("prioridadeTarefa").value;
     const tarefa = inputTarefa.value.trim();
-    const idTask = null; // ID será gerado automaticamente
 
     if (tarefa === "") {
         Swal.fire({
@@ -24,6 +24,7 @@ function adicionarTarefa() {
 
     tarefas.push({
         texto: tarefa,
+        descricao: inputDescricao,
         status: statusTarefa,
         prioridade: prioridade,
         criadaEm: new Date().toISOString(),
@@ -76,6 +77,10 @@ function renderizarTarefas() {
                 const tdTexto = document.createElement("td");
                 tdTexto.textContent = tarefa.texto;
 
+                // Descrição
+                const tdDescricao = document.createElement("td");
+                tdDescricao.textContent = tarefa.descricao;
+
                 // Prioridade
                 const tdPrioridade = document.createElement("td");
                 tdPrioridade.textContent = tarefa.prioridade;
@@ -112,7 +117,7 @@ function renderizarTarefas() {
 
                 tdAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
 
-                tr.append(tdId, tdTexto, tdPrioridade, tdStatus, tdData, tdAcoes);
+                tr.append(tdId, tdTexto, tdDescricao, tdPrioridade, tdStatus, tdData, tdAcoes);
                 tbody.appendChild(tr);
             }
 });}
@@ -283,6 +288,18 @@ function ordenarId() {
         ordenarAscendente
             ? a.id - b.id
             : b.id - a.id
+    );
+
+    ordenarAscendente = !ordenarAscendente;
+    salvarTarefasNoLocalStorage();
+    renderizarTarefas();
+}
+
+function ordenarDescrricao() {
+    tarefas.sort((a, b) =>
+        ordenarAscendente
+            ? a.descricao - b.descricao
+            : b.descricao - a.descricao
     );
 
     ordenarAscendente = !ordenarAscendente;
@@ -464,6 +481,27 @@ function fecharModal() {
     document.getElementById("inputTarefa").value = "";
 }
 
+// Modal Filtro
+function abrirModalFiltros(){
+    document.getElementById("modalFiltros").style.display = "flex";
+}
+
+function limparFiltros() {
+    document.getElementById("filtroStatus").value = "";
+    document.getElementById("filtroPrioridade").value = "";
+    fecharModalFiltros();
+    atualizar();
+}
+
+function fecharModalFiltros() {
+    document.getElementById("modalFiltros").style.display = "none";
+}
+
+function aplicarFiltros() {
+    fecharModalFiltros();
+    atualizar();
+}
+
 // ================== EVENTOS FILTRO ==================
 pesquisa.addEventListener("input", atualizar);
 filtroStatus.addEventListener("change", atualizar);
@@ -490,3 +528,4 @@ function modalDeConfirmacao(mensagem, acaoConfirmar) {
         }
     });
 }
+
