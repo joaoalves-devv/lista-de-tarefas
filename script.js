@@ -1,6 +1,7 @@
 // ================== DADOS ==================
 let tarefas = [];
 let ordenarAscendente = true;
+let idEmEdicao = null;
 
 // Garante que a função original de criar tarefa esteja sempre disponível
 const form = document.getElementById("modal");
@@ -13,54 +14,61 @@ form.onsubmit = function (e) {
 
 // ================== ADICIONAR ==================
 function adicionarTarefa() {
+
     const inputTarefa = document.getElementById("inputTarefa");
-    const inputDescricao = document.getElementById("inputDescricao").value;
-    const statusTarefa = document.getElementById("statusTarefa").value;
-    const prioridade = document.getElementById("prioridadeTarefa").value;
-    const tarefa = inputTarefa.value.trim();
-    const idsValidos = tarefas
-    .map(t => Number(t.id))
-    .filter(id => !isNaN(id));
+    const inputDescricao = document.getElementById("inputDescricao");
+    const selectPrioridade = document.getElementById("prioridadeTarefa");
+    const selectStatus = document.getElementById("statusTarefa");
 
-const novoId = idsValidos.length > 0
-    ? Math.max(...idsValidos) + 1
-    : 1;
+    const texto = inputTarefa.value.trim();
+    if (!texto) return;
 
+    // 🔥 SE ESTIVER EDITANDO
+    if (idEmEdicao !== null) {
 
-    if (tarefa === "") {
+        const index = tarefas.findIndex(t => t.id === idEmEdicao);
+        if (index !== -1) {
+            tarefas[index].texto = texto;
+            tarefas[index].descricao = inputDescricao.value;
+            tarefas[index].prioridade = selectPrioridade.value;
+            tarefas[index].status = selectStatus.value;
+        }
+
+        idEmEdicao = null; // 🔥 limpa modo edição
+
         Swal.fire({
-            icon: "warning",
-            title: "Campo vazio!",
-            text: "Adicione algo para criar a tarefa.",
+            icon: "success",
+            title: "Tarefa editada!",
             timer: 1000,
-            background: "#F4F0EA",
-            color: "#331F19"
+            showConfirmButton: false
         });
-        return;
+
+    } else {
+
+        // 🔥 SE FOR NOVA TAREFA
+        const novoId = tarefas.length > 0
+            ? Math.max(...tarefas.map(t => Number(t.id))) + 1
+            : 1;
+
+        tarefas.push({
+            id: novoId,
+            texto: texto,
+            descricao: inputDescricao.value,
+            prioridade: selectPrioridade.value,
+            status: selectStatus.value,
+            criadaEm: new Date().toISOString()
+        });
+
+        Swal.fire({
+            icon: "success",
+            title: "Tarefa adicionada!",
+            timer: 1000,
+            showConfirmButton: false
+        });
     }
 
-    tarefas.push({
-        texto: tarefa,
-        descricao: inputDescricao,
-        status: statusTarefa,
-        prioridade: prioridade,
-        criadaEm: new Date().toISOString(),
-        id: novoId
-    });
-
-    fecharModal();
     atualizar();
-
-    Swal.fire({
-        icon: "success",
-        title: "Tarefa adicionada!",
-        timer: 1000,
-        showConfirmButton: false,
-        background: "#F4F0EA",
-        color: "#331F19"
-    });
-
-    inputTarefa.value = "";
+    fecharModal();
 }
 
 function renderizarTarefas() {
@@ -128,14 +136,21 @@ function renderizarTarefas() {
                 tdAcoes.appendChild(listagemAcoes);
                 const btnOpcoes = document.createElement("button");
                 btnOpcoes.textContent = "⚙️";
-                btnOpcoes.addEventListener("mouseenter", () => {
+                btnOpcoes.addEventListener("click", (e) => {
+                    const rect = btnOpcoes.getBoundingClientRect();
+
+                    listagemAcoes.style.top = rect.bottom + "px";
+                    listagemAcoes.style.left = rect.left + "px";
+
                     listagemAcoes.classList.remove("esconder");
                     listagemAcoes.classList.add("mostrar");
                 });
+
                 listagemAcoes.addEventListener("mouseleave", () => {
                     listagemAcoes.classList.remove("mostrar");
                     listagemAcoes.classList.add("esconder");
                 });
+
                 tdAcoes.appendChild(btnOpcoes);
 
                 const btnConcluir = document.createElement("button");
@@ -172,12 +187,13 @@ function editarTarefa(id) {
     const tarefa = tarefas.find(t => t.id === id);
     if (!tarefa) return;
 
-    const form = document.getElementById("modal");
-    const tituloModal = document.getElementById("tituloModalCriacao");
+    idEmEdicao = id; // guarda o ID que está sendo editado
+
     const inputTarefa = document.getElementById("inputTarefa");
     const inputDescricao = document.getElementById("inputDescricao");
     const selectPrioridade = document.getElementById("prioridadeTarefa");
     const selectStatus = document.getElementById("statusTarefa");
+    const tituloModal = document.getElementById("tituloModalCriacao");
     const botaoSalvar = document.getElementById("botaoFinalizarCadastro");
 
     tituloModal.textContent = "Editar Tarefa";
@@ -188,39 +204,9 @@ function editarTarefa(id) {
     selectPrioridade.value = tarefa.prioridade;
     selectStatus.value = tarefa.status;
 
-    form.onsubmit = function (e) {
-        e.preventDefault();
-
-        const novoTexto = inputTarefa.value.trim();
-        if (novoTexto === "") return;
-
-        const index = tarefas.findIndex(t => t.id === id);
-        if (index === -1) return;
-
-        tarefas[index].texto = novoTexto;
-        tarefas[index].descricao = inputDescricao.value;
-        tarefas[index].status = selectStatus.value;
-        tarefas[index].prioridade = selectPrioridade.value;
-
-        atualizar();
-        fecharModal();
-
-        Swal.fire({
-            icon: "success",
-            title: "Tarefa editada!",
-            timer: 1000,
-            showConfirmButton: false
-        });
-
-        // 🔥 RESTAURA para modo criar
-        form.onsubmit = function (e) {
-            e.preventDefault();
-            adicionarTarefa();
-        };
-    };
-
     abrirModal();
 }
+
 // ================== STATUS ==================
 function formatarStatus(status) {
     const mapa = {
