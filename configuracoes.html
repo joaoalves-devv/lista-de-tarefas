@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Tarefas</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/configuracoes.css">
 
 
 </head>
@@ -14,9 +14,10 @@
 <body style="height: 100vh !important;">
   <div class="container">
     <div class="titlesHome">
-      <h1>Lista de Tarefas</h1>
-      <button onclick="window.location.href='configuracoes.html'">⚙️</button>
+      <h1>Configurações</h1>
+      <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
     </div>
+
     <!-- 🔎 PESQUISA E FILTROS -->
     <div class="filtros">
       <input type="text" id="pesquisa" placeholder="Pesquisar tarefa...">
@@ -25,8 +26,6 @@
     <!-- BOTÕES -->
     <div class="botoesGeral">
       <button onclick="abrirModal()">➕ Adicionar Tarefa</button>
-      <button onclick="exportarPDF()">📄 Exportar PDF</button>
-      <span id="botoesExtras"></span>
     </div>
     <p id="mensagem"></p>
     <!-- LOADER -->
@@ -101,7 +100,6 @@
             </select>
           </div>
           <div class="flex-column">
-
             <label for="filtroPrioridade">Prioridade</label>
             <select id="filtroPrioridade">
               <option value="">Todas</option>
@@ -111,48 +109,14 @@
             </select>
           </div>
         </div>
-        <!-- <div class="between">
-          <div class="flex-column">
-
-            <label for="filtroDataInicio">Data inicio</label>
-            <input type="datetime-local" id="filtroDataInicio" value="{startDate}
-      onChange={(e) => setStartDate(e.target.value)}">
-          </div>
-          <div class="flex-column">
-
-            <label for="filtroDataFim">Data fim</label>
-            <input type="datetime-local" id="filtroDataFim" value="{endDate}
-       onChange={(e) => setEndDate(e.target.value)}">
-          </div>
-        </div>
-        <div class="between">
-          <div class="flex-column">
-
-            <label for="filtroVencimento">Vencimento</label>
-            <input type="datetime-local" id="filtroVencimento">
-
-          </div>
-          <div class="flex-column">
-
-            <label for="">Tags</label>
-            <select name="tags" id="filtroTags">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-
-        </div> -->
-
         <div class="modal-botoes-filtros; between">
           <button onclick="limparFiltros()">Limpar Filtros</button>
           <button onclick="aplicarFiltros()">Filtrar</button>
         </div>
       </div>
-    </div>
   </div>
   </div>
-  <script src="script.js"></script>
+  <script src="configuracoes.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- jsPDF -->
