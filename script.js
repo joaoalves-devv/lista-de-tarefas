@@ -80,123 +80,122 @@ selectStatus.selectedIndex = 0;
 }
 
 function renderizarTarefas() {
+
     const tbody = document.getElementById("listaTarefas");
     tbody.innerHTML = "";
 
-    // 🔎 filtros atuais da tela
-    const busca = pesquisa.value.toLowerCase();
-    const filtroStatus = document.getElementById("filtroStatus").value;
-    const filtroPrioridade = document.getElementById("filtroPrioridade").value;
-    const filtroInicioCriacao = document.getElementById("filtroDataInicio").value;
-    const filtroFimCriacao = document.getElementById("filtroDataFim").value;
+    // 🔎 filtros da tela
+    const busca = (document.getElementById("pesquisa")?.value || "").toLowerCase();
+    const filtroStatus = document.getElementById("filtroStatus")?.value;
+    const filtroPrioridade = document.getElementById("filtroPrioridade")?.value;
+    const filtroInicioCriacao = document.getElementById("filtroDataInicio")?.value;
+    const filtroFimCriacao = document.getElementById("filtroDataFim")?.value;
 
-    tarefas
-        .forEach((tarefa, i) => {
-            if (
-                tarefa.texto.toLowerCase().includes(busca) &&
-                (!filtroStatus || tarefa.status === filtroStatus) &&
-                (!filtroPrioridade || tarefa.prioridade === filtroPrioridade) &&
-                (!filtroInicioCriacao || new Date(tarefa.criadaEm) >= new Date(filtroInicioCriacao)) &&
-                (!filtroFimCriacao || new Date(tarefa.criadaEm) <= new Date(filtroFimCriacao))
-            ) {
-                const tr = document.createElement("tr");
+    tarefas.forEach((tarefa, i) => {
 
-                // status visual
-                if (tarefa.status === "concluida") tr.classList.add("taskDone");
-                if (tarefa.status === "cancelada") tr.classList.add("taskCancel");
-                if (tarefa.status === "vencida") tr.classList.add("taskExpired");
+        if (
+            (tarefa.texto || "").toLowerCase().includes(busca) &&
+            (!filtroStatus || tarefa.status === filtroStatus) &&
+            (!filtroPrioridade || tarefa.prioridade === filtroPrioridade) &&
+            (!filtroInicioCriacao || new Date(tarefa.criadaEm) >= new Date(filtroInicioCriacao)) &&
+            (!filtroFimCriacao || new Date(tarefa.criadaEm) <= new Date(filtroFimCriacao))
+        ) {
 
-                // ========= COLUNAS =========
-                // ID
-                const tdId = document.createElement("td");
-                tdId.textContent = tarefa.id;
+            const tr = document.createElement("tr");
 
-                // Tarefa
-                const tdTexto = document.createElement("td");
-                tdTexto.textContent = tarefa.texto;
-                tdTexto.textContent = (tarefa.texto || "").trim() || "-";
-                tdTexto.onclick = () => {
-                    window.location.href = `subtarefas.html?id=${tarefa.id}`;
-                };
+            // status visual
+            if (tarefa.status === "concluida") tr.classList.add("taskDone");
+            if (tarefa.status === "cancelada") tr.classList.add("taskCancel");
+            if (tarefa.status === "vencida") tr.classList.add("taskExpired");
 
+            // ========= COLUNA ID =========
+            const tdId = document.createElement("td");
+            tdId.textContent = tarefa.id ?? "-";
 
-                // Descrição
-                const tdDescricao = document.createElement("td");
-                tdDescricao.textContent = tarefa.descricao;
-                tdDescricao.textContent = (tarefa.descricao || "").trim() || "-";
+            // ========= COLUNA TAREFA =========
+            const tdTexto = document.createElement("td");
+            tdTexto.textContent = (tarefa.texto || "").trim() || "-";
 
-                // Prioridade
-                const tdPrioridade = document.createElement("td");
-                tdPrioridade.textContent = tarefa.prioridade;
-                tdPrioridade.classList.add(`prioridade-${tarefa.prioridade}`);
+            tdTexto.onclick = () => {
+                window.location.href = `subtarefas.html?id=${tarefa.id}`;
+            };
 
-                // Status
-                const tdStatus = document.createElement("td");
-                const total = tarefa.subTarefas.length;
-                const concluidas = tarefa.subTarefas.filter(sub => sub.status === "concluida").length;
-                tdStatus.textContent = `${concluidas} / ${total}`;
+            // ========= COLUNA DESCRIÇÃO =========
+            const tdDescricao = document.createElement("td");
+            tdDescricao.textContent = (tarefa.descricao || "").trim() || "-";
 
-                // Data
-                const tdData = document.createElement("td");
+            // ========= COLUNA PRIORIDADE =========
+            const tdPrioridade = document.createElement("td");
+            tdPrioridade.textContent = tarefa.prioridade || "-";
+            tdPrioridade.classList.add(`prioridade-${tarefa.prioridade}`);
 
-                tdData.textContent = new Date(tarefa.criadaEm)
-                .toLocaleString("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                });
+            // ========= COLUNA DATA =========
+            const tdData = document.createElement("td");
 
+            tdData.textContent = new Date(tarefa.criadaEm).toLocaleString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
 
-                // Ações
-                const tdAcoes = document.createElement("td");
-                const listagemAcoes = document.createElement("div");
-                tdAcoes.classList.add("acoes");
-                listagemAcoes.classList.add("listagemAcoes", "esconder");
-                tdAcoes.appendChild(listagemAcoes);
-                const btnOpcoes = document.createElement("button");
-                btnOpcoes.textContent = "⚙️";
-                btnOpcoes.addEventListener("click", (e) => {
-                    const rect = btnOpcoes.getBoundingClientRect();
+            // ========= COLUNA AÇÕES =========
+            const tdAcoes = document.createElement("td");
+            tdAcoes.classList.add("acoes");
 
-                    listagemAcoes.style.top = rect.bottom + "px";
-                    listagemAcoes.style.left = rect.left + "px";
+            const listagemAcoes = document.createElement("div");
+            listagemAcoes.classList.add("listagemAcoes", "esconder");
 
-                    listagemAcoes.classList.remove("esconder");
-                    listagemAcoes.classList.add("mostrar");
-                });
+            const btnOpcoes = document.createElement("button");
+            btnOpcoes.textContent = "⚙️";
 
-                listagemAcoes.addEventListener("mouseleave", () => {
-                    listagemAcoes.classList.remove("mostrar");
-                    listagemAcoes.classList.add("esconder");
-                });
+            btnOpcoes.addEventListener("click", () => {
 
-                tdAcoes.appendChild(btnOpcoes);
+                const rect = btnOpcoes.getBoundingClientRect();
 
-                const btnConcluir = document.createElement("button");
-                btnConcluir.textContent = "Marcar como conluida!";
-                btnConcluir.onclick = () => marcarComoFeito(i);
-                btnConcluir.classList.add("btnAcoes");
+                listagemAcoes.style.top = rect.bottom + "px";
+                listagemAcoes.style.left = rect.left + "px";
 
-                const btnCancelar = document.createElement("button");
-                btnCancelar.textContent = "Cancelar";
-                btnCancelar.onclick = () => cancelarTarefa(i);
-                btnCancelar.classList.add("btnAcoes");
+                listagemAcoes.classList.remove("esconder");
+                listagemAcoes.classList.add("mostrar");
 
-                const btnEditar = document.createElement("button");
-                btnEditar.textContent = "Editar";
-                btnEditar.onclick = () => editarTarefa(tarefa.id);
-                btnEditar.classList.add("btnAcoes");
+            });
 
-                const btnRemover = document.createElement("button");
-                btnRemover.textContent = "Remover";
-                btnRemover.onclick = () => removerTarefa(i);
-                btnRemover.classList.add("btnAcoes");
+            listagemAcoes.addEventListener("mouseleave", () => {
 
-                listagemAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
+                listagemAcoes.classList.remove("mostrar");
+                listagemAcoes.classList.add("esconder");
 
-                tr.append(tdId, tdTexto, tdDescricao, tdPrioridade, tdStatus, tdData, tdAcoes);
+            });
+
+            tdAcoes.appendChild(btnOpcoes);
+            tdAcoes.appendChild(listagemAcoes);
+
+            // botões
+            const btnConcluir = document.createElement("button");
+            btnConcluir.textContent = "Marcar como concluída";
+            btnConcluir.onclick = () => marcarComoFeito(i);
+            btnConcluir.classList.add("btnAcoes");
+
+            const btnCancelar = document.createElement("button");
+            btnCancelar.textContent = "Cancelar";
+            btnCancelar.onclick = () => cancelarTarefa(i);
+            btnCancelar.classList.add("btnAcoes");
+
+            const btnEditar = document.createElement("button");
+            btnEditar.textContent = "Editar";
+            btnEditar.onclick = () => editarTarefa(tarefa.id);
+            btnEditar.classList.add("btnAcoes");
+
+            const btnRemover = document.createElement("button");
+            btnRemover.textContent = "Remover";
+            btnRemover.onclick = () => removerTarefa(i);
+            btnRemover.classList.add("btnAcoes");
+
+            listagemAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
+
+                tr.append(tdId, tdTexto, tdDescricao, tdPrioridade, tdData, tdAcoes);
                 tbody.appendChild(tr);
             }
         });
