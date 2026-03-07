@@ -4,6 +4,16 @@
     box-sizing: border-box;
 }
 
+:root {
+    --cor-fundo: #CBBBA7;
+    --cor-primaria: #8B7D70;
+    --cor-secundaria: #F4F0EA;
+    --cor-destaque: rgba(19, 19, 56, 1);
+    --cor-prioridade-baixa: #000000;
+    --cor-prioridade-media: #f9a825;
+    --cor-prioridade-alta: #000000;
+}
+
 /* Evita o SweetAlert2 de quebrar o layout centralizado */
 body.swal2-shown {
   overflow-y: hidden !important; /* impede barra de rolagem temporária */
@@ -23,18 +33,18 @@ body {
     justify-content: center !important;
     align-items: center !important;
     margin: 0 !important;
-    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+    background: var(--cor-destaque);
 }
 
 .container {
     text-align: center;
-    background-color: #CBBBA7;
+    background: var(--cor-fundo);
     padding: 20px;
     border-radius: 40px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 900px;
-    border: 2px solid #8B7D70;
+    border: 2px solid var(--cor-fundo);
     overflow: auto;
 }
 
@@ -58,8 +68,8 @@ p {
 }
 
 button {
-    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
-    color: #F4F0EA;
+    background: var(--cor-destaque);
+  color: #F4F0EA;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
@@ -99,8 +109,8 @@ thead th {
     position: sticky;
     top: 0;
     z-index: 2;
-    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
-    color: #fff
+    background: var(--cor-destaque);
+   color: #fff
 }
 
 tbody tr {
@@ -135,8 +145,22 @@ td.col-tarefa {
 /* Largura titulo */
 th:nth-child(2),
 td:nth-child(2) {
+    
   width: 22%;
+  cursor: pointer;
 }
+
+/* Coluna Tarefa (Título) */
+td:nth-child(2) {
+  max-width: 250px;        /* define largura máxima */
+  white-space: nowrap;     /* impede quebra de linha */
+  overflow: hidden;        /* esconde excesso */
+  text-overflow: ellipsis; /* adiciona ... */
+  color: rgb(30, 0, 161);
+  text-decoration: underline;
+}
+
+
 
 /* Largura descrição */
 th:nth-child(3){
@@ -285,8 +309,18 @@ input[type="text"]:focus {
     color: white !important;
 }
 
+.taskExpired {
+    background-color: var(--cor-prioridade-media); /* amarelo */
+    color: white !important;
+}
+
 .done {
     background: #45801e;
+    color: #F4F0EA !important;
+}
+
+.limpar {
+    background: #ad314e;
     color: #F4F0EA !important;
 }
 
@@ -308,7 +342,7 @@ body.swal2-height-auto {
 }
 
 .prioridade-Média {
-    color: #f9a825;
+    color: #000000;
     font-weight: bold;
 }
 
@@ -436,7 +470,8 @@ body.swal2-height-auto {
 }
 
 .btnAcoes {
-    background: linear-gradient(124deg, rgba(2, 0, 36, 1) 0%, rgba(19, 19, 56, 1) 52%, rgba(0, 212, 255, 1) 200%);
+    background: var(--cor-destaque);
+
     color: #F4F0EA;
     border: none;
     border-radius: 5px;
@@ -449,4 +484,25 @@ body.swal2-height-auto {
     background: #60041A;
     color: white;
     transition: background-color 0.3s ease;
+}
+
+/* MODAL SUB */
+.modalSubTarefa {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content-sub {
+  background: #F4F0EA;
+  padding: 20px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  gap: 10px;
 }

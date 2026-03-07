@@ -5,25 +5,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Tarefas</title>
+  <title>Subtarefas</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="subtarefas.css">
 
 
 </head>
 
 <body style="height: 100vh !important;">
   <div class="container">
-    <h1>Lista de Tarefas</h1>
-    <p>Adicione suas tarefas!</p>
+    <div class="titlesSub">
+      <h2 id="tituloPagina">Subtarefas</h2>
+      <button onclick="voltar()">⬅ Voltar</button>
+    </div>
+
     <!-- 🔎 PESQUISA E FILTROS -->
     <div class="filtros">
       <input type="text" id="pesquisa" placeholder="Pesquisar tarefa...">
-      <button onclick="abrirModalFiltros()">Filtrar</button>
+      <!-- <button onclick="abrirModalFiltros()">FIltrar</button> -->
     </div>
     <!-- BOTÕES -->
     <div class="botoesGeral">
-      <button onclick="abrirModal()">Adicionar Tarefa</button>
-      <button onclick="exportarPDF()">Exportar PDF</button>
+      <button onclick="abrirModalSubTarefa()">Adicionar SubTarefa</button>
+      <!-- <button onclick="exportarPDF()">📄 Exportar PDF</button> -->
       <span id="botoesExtras"></span>
     </div>
     <p id="mensagem"></p>
@@ -40,12 +44,13 @@
             <th onclick="ordenarTarefas()" style="cursor: pointer;">Tarefa</th>
             <th onclick="ordenarDescricao()" style="cursor: pointer;">Descrição</th>
             <th onclick="ordenarPrioridade()" style="cursor: pointer;">Prioridade</th>
-            <th onclick="ordenarSubs()" style="cursor: pointer;">Tasks Filhas</th>
+            <th onclick="ordenarstatus()" style="cursor: pointer;">Status</th>
             <th onclick="ordenarCriacao()" style="cursor: pointer;">Criação</th>
             <th>Ações</th>
           </tr>
         </thead>
-        <tbody id="listaTarefas"></tbody>
+      <tbody id="tbodySubtarefas"></tbody>
+
       </table>
     </div>
 
@@ -53,17 +58,51 @@
     <div id="modal" class="modal">
       <div class="modal-content">
         <h2 id="tituloModalCriacao">Nova Tarefa</h2>
-          <label for="inputTarefa">Titulo</label>
+
           <input type="text" id="inputTarefa" placeholder="Digite a tarefa">
         <div>
-          <label for="inputDescricao">Descrição</label>
           <textarea name="descrição" id="inputDescricao" placeholder="Digite a descrição da sua tarefa"></textarea>
         </div>
         <div style="display: flex;     justify-content: space-between;">
-          <div class="flex-column">
 
-            <label for="prioridadeTarefa">Prioridade</label>
-            <select id="prioridadeTarefa">
+          <select id="prioridadeTarefa">
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+          </select>
+
+          <select id="statusTarefa">
+            <option value="Em aberto">Em aberto</option>
+            <option value="concluida">Concluída</option>
+            <option value="cancelada">Cancelada</option>
+            <!-- <option value="vencida">Vencida</option> -->
+          </select>
+
+        </div>
+        <div class="modal-botoes">
+          <button onclick="fecharModal()">Cancelar</button>
+          <button onclick="adicionarSubTarefa()" id="botaoFinalizarCadastro">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+       
+    <!-- 🔲 MODAL SUBTAREFA-->
+    <div id="modalSubTarefa" class="modalSubTarefa">
+      <div class="modal-content-sub">
+        <h2 id="tituloModalCriacaoSub">Nova Subtarefa</h2>
+          <div class="flex-column">
+            <label for="inputTarefaSub">Titulo</label>
+            <input type="text" id="inputTarefaSub" placeholder="Digite a subtarefa">
+          </div>
+        <div class="flex-column">
+          <label for="inputDescricaoSub">Descrição</label>
+          <textarea name="descrição" id="inputDescricaoSub" placeholder="Digite a descrição da sua subtarefa"></textarea>
+        </div>
+        <div style="display: flex;     justify-content: space-between;">
+          <div class="flex-column">
+            <label for="prioridadeTarefaSub">Prioridade</label>
+            <select id="prioridadeTarefaSub">
               <option value="Baixa">Baixa</option>
               <option value="Média">Média</option>
               <option value="Alta">Alta</option>
@@ -71,19 +110,18 @@
           </div>
           <div class="flex-column">
 
-            <label for="statusTarefa">Status</label>
-            <select id="statusTarefa">
+            <label for="statusTarefaSub">Status</label>
+            <select id="statusTarefaSub"> 
               <option value="Em aberto">Em aberto</option>
               <option value="concluida">Concluída</option>
-               <option value="vencida">Vencida</option>
               <option value="cancelada">Cancelada</option>
             </select>
           </div>
 
         </div>
         <div class="modal-botoes">
-          <button onclick="fecharModal()">Cancelar</button>
-          <button onclick="adicionarTarefa()" id="botaoFinalizarCadastro">Salvar</button>
+          <button onclick="fecharModalSubTarefa()">Cancelar</button>
+          <button onclick="adicionarSubTarefa()" id="botaoFinalizarCadastroSub">Salvar</button>
         </div>
       </div>
     </div>
@@ -103,7 +141,6 @@
               <option value="">Todos</option>
               <option value="Em aberto">Em aberto</option>
               <option value="concluida">Concluída</option>
-              <option value="vencida">Vencida</option>
               <option value="cancelada">Cancelada</option>
             </select>
           </div>
@@ -118,38 +155,6 @@
             </select>
           </div>
         </div>
-        <div class="between">
-          <div class="flex-column">
-
-            <label for="filtroDataInicio">Data inicio</label>
-            <input type="datetime-local" id="filtroDataInicio" value="{startDate}
-  onChange={(e) => setStartDate(e.target.value)}">
-          </div>
-          <div class="flex-column">
-
-            <label for="filtroDataFim">Data fim</label>
-            <input type="datetime-local" id="filtroDataFim" value="{endDate}
-  onChange={(e) => setEndDate(e.target.value)}">
-          </div>
-        </div>
-        <div class="between">
-          <div class="flex-column">
-<!-- 
-            <label for="filtroVencimento">Vencimento</label>
-            <input type="datetime-local" id="filtroVencimento">
-
-          </div>
-          <div class="flex-column">
-
-            <label for="">Tags</label>
-            <select name="tags" id="filtroTags">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div> -->
-
-        </div>
 
         <div class="modal-botoes-filtros; between">
           <button onclick="limparFiltros()">Limpar Filtros</button>
@@ -159,12 +164,9 @@
     </div>
   </div>
   </div>
-  <script src="script.js"></script>
+  <script src="subtarefas.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </body>
 
 </html>

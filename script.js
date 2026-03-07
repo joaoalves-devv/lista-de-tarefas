@@ -2,6 +2,8 @@
 let tarefas = [];
 let ordenarAscendente = true;
 let idEmEdicao = null;
+let tarefaSubAtualId = null;
+
 
 // Garante que a função original de criar tarefa esteja sempre disponível
 const form = document.getElementById("modal");
@@ -56,7 +58,8 @@ function adicionarTarefa() {
             descricao: inputDescricao.value,
             prioridade: selectPrioridade.value,
             status: selectStatus.value,
-            criadaEm: new Date().toISOString()
+            criadaEm: new Date().toISOString(),
+            subTarefas: []
         });
 
         Swal.fire({
@@ -69,6 +72,11 @@ function adicionarTarefa() {
 
     atualizar();
     fecharModal();
+inputTarefa.value = "";
+inputDescricao.value = "";
+selectPrioridade.selectedIndex = 0;
+selectStatus.selectedIndex = 0;
+
 }
 
 function renderizarTarefas() {
@@ -79,19 +87,24 @@ function renderizarTarefas() {
     const busca = pesquisa.value.toLowerCase();
     const filtroStatus = document.getElementById("filtroStatus").value;
     const filtroPrioridade = document.getElementById("filtroPrioridade").value;
+    const filtroInicioCriacao = document.getElementById("filtroDataInicio").value;
+    const filtroFimCriacao = document.getElementById("filtroDataFim").value;
 
     tarefas
         .forEach((tarefa, i) => {
             if (
                 tarefa.texto.toLowerCase().includes(busca) &&
                 (!filtroStatus || tarefa.status === filtroStatus) &&
-                (!filtroPrioridade || tarefa.prioridade === filtroPrioridade)
+                (!filtroPrioridade || tarefa.prioridade === filtroPrioridade) &&
+                (!filtroInicioCriacao || new Date(tarefa.criadaEm) >= new Date(filtroInicioCriacao)) &&
+                (!filtroFimCriacao || new Date(tarefa.criadaEm) <= new Date(filtroFimCriacao))
             ) {
                 const tr = document.createElement("tr");
 
                 // status visual
                 if (tarefa.status === "concluida") tr.classList.add("taskDone");
                 if (tarefa.status === "cancelada") tr.classList.add("taskCancel");
+                if (tarefa.status === "vencida") tr.classList.add("taskExpired");
 
                 // ========= COLUNAS =========
                 // ID
@@ -102,6 +115,10 @@ function renderizarTarefas() {
                 const tdTexto = document.createElement("td");
                 tdTexto.textContent = tarefa.texto;
                 tdTexto.textContent = (tarefa.texto || "").trim() || "-";
+                tdTexto.onclick = () => {
+                    window.location.href = `subtarefas.html?id=${tarefa.id}`;
+                };
+
 
                 // Descrição
                 const tdDescricao = document.createElement("td");
@@ -115,7 +132,9 @@ function renderizarTarefas() {
 
                 // Status
                 const tdStatus = document.createElement("td");
-                tdStatus.textContent = formatarStatus(tarefa.status);
+                const total = tarefa.subTarefas.length;
+                const concluidas = tarefa.subTarefas.filter(sub => sub.status === "concluida").length;
+                tdStatus.textContent = `${concluidas} / ${total}`;
 
                 // Data
                 const tdData = document.createElement("td");
@@ -175,7 +194,6 @@ function renderizarTarefas() {
                 btnRemover.onclick = () => removerTarefa(i);
                 btnRemover.classList.add("btnAcoes");
 
-
                 listagemAcoes.append(btnConcluir, btnCancelar, btnEditar, btnRemover);
 
                 tr.append(tdId, tdTexto, tdDescricao, tdPrioridade, tdStatus, tdData, tdAcoes);
@@ -207,17 +225,6 @@ function editarTarefa(id) {
     selectStatus.value = tarefa.status;
 
     abrirModal();
-}
-
-// ================== STATUS ==================
-function formatarStatus(status) {
-    const mapa = {
-        pendente: "Em aberto",
-        concluida: "Concluída",
-        cancelada: "Cancelada"
-    };
-
-    return mapa[status] || status;
 }
 
 // ================== AÇÕES ==================
@@ -272,6 +279,7 @@ function renderizarBotaoLimpar() {
     if (tarefas.length > 0) {
         const btn = document.createElement("button");
         btn.textContent = "Limpar lista";
+        btn.classList.add("limpar");
         btn.onclick = limpar;
         div.appendChild(btn);
     }
@@ -296,7 +304,7 @@ async function renderizarBotaoOrdenarStatus() {
         const btn = document.createElement("button");
         btn.textContent = "👇";
         btn.classList.add("ordenar");
-        btn.onclick = ordenarstatus;
+        btn.onclick = ordenarSubs;
         div.appendChild(btn);
     }
     console.log("renderizou ordenar status");
@@ -315,7 +323,7 @@ function ordenarTarefas() {
     renderizarTarefas();
 }
 
-function ordenarstatus() {
+function ordenarSubs() {
     tarefas.sort((a, b) =>
         ordenarAscendente
             ? a.status.localeCompare(b.status)
@@ -436,7 +444,7 @@ function exportarPDF() {
     // =========================================
     // 3. Definição das colunas da tabela
     // =========================================
-    const colunas = ["Tarefa", "Descrição", "Prioridade", "Status", "Criação"];
+    const colunas = ["Tarefa", "Descrição", "Prioridade", "Criação"];
 
     // =========================================
     // 4. Monta o corpo da tabela a partir
@@ -446,7 +454,6 @@ function exportarPDF() {
         tarefa.id + " - " + tarefa.texto,
         tarefa.descricao,
         tarefa.prioridade,
-        formatarStatus(tarefa.status),
         new Date(tarefa.criadaEm).toLocaleDateString("pt-BR")
     ]);
 
@@ -488,29 +495,7 @@ function exportarPDF() {
             0: { halign: "left", cellWidth: 40 }, // Tarefa
             1: { halign: "left", cellWidth: 50 }, // Descrição
             2: { halign: "center", cellWidth: 30 }, // Prioridade
-            3: { halign: "center", cellWidth: 30 }, // Status
-            4: { halign: "center", cellWidth: 30 }  // Data
-        },
-
-        // -------------------------------------
-        // Estilo condicional por linha
-        // -------------------------------------
-        didParseCell: function (data) {
-            if (data.section === "body") {
-                const status = data.row.raw[3]; // coluna "Status"
-
-                // Concluída → Verde
-                if (status === "Concluída") {
-                    data.cell.styles.fillColor = [76, 175, 80];
-                    data.cell.styles.textColor = [255, 255, 255];
-                }
-
-                // Cancelada → Vermelho
-                if (status === "Cancelada") {
-                    data.cell.styles.fillColor = [244, 67, 54];
-                    data.cell.styles.textColor = [255, 255, 255];
-                }
-            }
+            3: { halign: "center", cellWidth: 30 }  // Data
         },
 
         // -------------------------------------
@@ -559,6 +544,8 @@ function abrirModalFiltros() {
 function limparFiltros() {
     document.getElementById("filtroStatus").value = "";
     document.getElementById("filtroPrioridade").value = "";
+    document.getElementById("filtroDataInicio").value = "";
+    document.getElementById("filtroDataFim").value = "";
     fecharModalFiltros();
     atualizar();
 }
@@ -618,5 +605,20 @@ function corrigirIdsAntigos() {
 
     salvarTarefasNoLocalStorage();
 }
+
+function corrigirTarefasSemCriacao() {
+    let corrigiu = false;   
+    tarefas.forEach(tarefa => {
+        if (!tarefa.criadaEm) {
+            tarefa.criadaEm = new Date().toISOString();
+            corrigiu = true;
+        }
+    });
+    if (corrigiu) {
+        salvarTarefasNoLocalStorage();
+    }
+}
+
+corrigirTarefasSemCriacao();
 
 corrigirIdsAntigos();
